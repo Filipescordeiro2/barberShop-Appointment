@@ -2,13 +2,12 @@ package com.fscordeiro.clientService.service;
 
 import com.fscordeiro.clientService.dto.ClientRegisterResponse;
 import com.fscordeiro.clientService.dto.ClientRequest;
-import com.fscordeiro.clientService.entity.ClientEntity;
+import com.fscordeiro.clientService.mapper.ClientMapper;
 import com.fscordeiro.clientService.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -21,24 +20,10 @@ public class ClientService {
         try {
             log.info("Initialized service [ClientService - saveClient]");
 
-            var client=ClientEntity
-                    .builder()
-                    .cpf(request.cpf())
-                    .name(request.name())
-                    .surName(request.surName())
-                    .phone(request.phone())
-                    .email(request.email())
-                    .sex(request.sex())
-                    .birthDate(request.birthDate())
-                    .build();
+            clientRepository.save(ClientMapper.toClientEntity(request));
 
-            clientRepository.save(client);
             log.info("Finished service [ClientService - saveClient]");
-            return ClientRegisterResponse
-                    .builder()
-                    .message("Client registered successfully")
-                    .createdAt(LocalDateTime.now())
-                    .build();
+            return ClientMapper.toClientRegisterResponse("Client registered successfully!!");
         }catch (Exception e) {
             throw e;
         }
